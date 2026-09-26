@@ -536,14 +536,14 @@
         <div class="rm-error" id="rm-err-wa"></div>
 
         <div class="rm-row">
-          <button class="rm-btn rm-btn-primary" onclick="if(RMBooking.validateStep1()) RMBooking.goto(1)">Lanjut ke verifikasi &amp; DP</button>
+          <button class="rm-btn rm-btn-primary" onclick="if(RMBooking.validateStep1()) RMBooking.goto(1)">Lanjut ke verifikasi</button>
         </div>
       `;
     }
 
     if(state.step === 1){
       c.innerHTML = `
-        <div class="rm-step-title"><span class="rm-step-num">2</span>Verifikasi &amp; DP</div>
+        <div class="rm-step-title"><span class="rm-step-num">2</span>Verifikasi amp;</div>
         <p class="rm-step-desc">Kode booking kamu, dan pilih metode pembayaran DP untuk mengunci jadwal.</p>
         <div class="rm-code-box">${state.bookingCode}</div>
         <p class="rm-hint">Simpan kode ini untuk konfirmasi ke admin rental.</p>
