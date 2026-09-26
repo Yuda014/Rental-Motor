@@ -133,7 +133,7 @@
       <a href="#cara">Cara Sewa</a>
       <a href="#kontak">Kontak</a>
     </div>
-    <a class="btn btn-primary" href="https://wa.me/62895351452156" target="_blank" rel="noopener">Chat WA</a>
+     <button class="btn btn-primary" onclick="openBookingModal()">Booking Sekarang</button>
   </nav>
 </header>
 
@@ -145,7 +145,7 @@
       <p class="lead">Putri Rental Motor Bandung menyediakan motor matic terawat untuk keliling Dago, Lembang, sampai Ciwidey. Antar-jemput area kota, tanpa ribet.</p>
       <div class="hero-cta">
         <a class="btn btn-primary" href="#harga">Lihat Harga Sewa</a>
-        <a class="btn btn-ghost" href="https://wa.me/62812351452156" target="_blank" rel="noopener">Tanya Ketersediaan</a>
+        <a class="btn btn-ghost" href="https://wa.me/62895351452156" target="_blank" rel="noopener">Tanya Ketersediaan</a>
       </div>
       <div class="stats">
         <div class="stat"><b>5/5</b><span>Rating penyewa</span></div>
@@ -273,6 +273,7 @@
     <div class="steps-grid">
       <div class="step-row">
         <div class="num"></div>
+        
         <div><h3>Booking lewat WhatsApp</h3><p>Kirim tanggal sewa, jenis motor, dan lokasi antar ke nomor kami.</p></div>
       </div>
       <div class="step-row">
@@ -281,7 +282,7 @@
       </div>
       <div class="step-row">
         <div class="num"></div>
-        <div><h3>Motor diantar</h3><p>Tim kami antar motor ke lokasi, cek kondisi bersama, langsung jalan.</p></div>
+        <div><h3>Motor diantar atau datang ke lokasi rental</h3><p>Tim kami antar motor ke lokasi, cek kondisi bersama, langsung jalan.</p></div>
       </div>
     </div>
   </div>
@@ -301,7 +302,7 @@
     <div class="cta">
       <h2>Siap keliling Bandung dengan motor sendiri?</h2>
       <div style="display:flex; flex-wrap:wrap; gap:14px;">
-        <a class="btn btn-primary" href="https://wa.me/62895351452156" target="_blank" rel="noopener">Booking via WhatsApp</a>
+       <button class="btn btn-primary" onclick="openBookingModal()">Booking Sekarang</button>
         <a class="btn btn-ghost" href="https://maps.app.goo.gl/iVnQaCz5V6sYEtgZ9" target="_blank" rel="noopener">Lihat Lokasi di Maps</a>
     </div>
   </div>
@@ -313,6 +314,334 @@
     <div>Jl. Cipedes Hegar, Bandung · WA 0895351452156</div>
   </div>
 </footer>
+<style>
+  #rm-booking-overlay{
+    --rm-accent:#0f6e56; --rm-accent-light:#e1f5ee; --rm-accent-dark:#04342c;
+    --rm-bg:#ffffff; --rm-card:#f7f6f2; --rm-text:#2c2c2a; --rm-muted:#5f5e5a; --rm-border:#d3d1c7;
+
+    position:fixed; inset:0; z-index:9999; display:none;
+    align-items:flex-start; justify-content:center;
+    background:rgba(0,0,0,.5);
+    padding:24px 16px; overflow-y:auto;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  }
+  #rm-booking-overlay.rm-open{ display:flex; }
+  #rm-booking-overlay *{ box-sizing:border-box; }
+  #rm-booking-overlay .rm-modal{
+    background:var(--rm-bg); color:var(--rm-text);
+    max-width:480px; width:100%; border-radius:14px; padding:24px;
+    position:relative; margin:auto;
+  }
+  #rm-booking-overlay .rm-close{
+    position:absolute; top:14px; right:14px; background:none; border:none;
+    font-size:20px; line-height:1; cursor:pointer; color:var(--rm-muted); padding:4px;
+  }
+  #rm-booking-overlay h1{font-size:20px; font-weight:600; margin:0 0 4px;}
+  #rm-booking-overlay .rm-sub{color:var(--rm-muted); font-size:14px; margin:0 0 20px;}
+  #rm-booking-overlay .rm-steps{display:flex; gap:6px; margin-bottom:24px;}
+  #rm-booking-overlay .rm-dot{flex:1; height:5px; border-radius:3px; background:var(--rm-border); transition:background .25s;}
+  #rm-booking-overlay .rm-dot.rm-done{background:var(--rm-accent);}
+  #rm-booking-overlay .rm-card{background:var(--rm-card); border:1px solid var(--rm-border); border-radius:12px; padding:20px; overflow-x:auto;}
+  #rm-booking-overlay .rm-step-title{font-size:16px; font-weight:600; margin:0 0 4px; display:flex; align-items:center; gap:8px;}
+  #rm-booking-overlay .rm-step-num{background:var(--rm-accent); color:#fff; width:22px; height:22px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; font-size:12px; flex-shrink:0;}
+  #rm-booking-overlay .rm-step-desc{color:var(--rm-muted); font-size:13px; margin:0 0 16px;}
+  #rm-booking-overlay label{display:block; font-size:13px; font-weight:600; margin:14px 0 6px; color:var(--rm-text);}
+  #rm-booking-overlay input,#rm-booking-overlay select{
+    width:100%; padding:10px 12px; border:1px solid var(--rm-border); border-radius:8px;
+    background:var(--rm-bg); color:var(--rm-text); font-size:14px;
+  }
+  #rm-booking-overlay input:focus,#rm-booking-overlay select:focus{outline:2px solid var(--rm-accent); outline-offset:1px;}
+  #rm-booking-overlay .rm-options{display:flex; gap:10px; margin-top:8px;}
+  #rm-booking-overlay .rm-opt{
+    flex:1; border:1px solid var(--rm-border); border-radius:10px; padding:14px 10px;
+    text-align:center; cursor:pointer; font-size:13px; background:var(--rm-bg);
+  }
+  #rm-booking-overlay .rm-opt.rm-selected{border-color:var(--rm-accent); background:var(--rm-accent-light); color:var(--rm-accent-dark); font-weight:600;}
+  #rm-booking-overlay .rm-error{color:#d14343; font-size:12px; margin-top:6px; min-height:16px;}
+  #rm-booking-overlay .rm-row{display:flex; gap:16px; margin-top:16px;}
+  #rm-booking-overlay .rm-btn{
+    flex:1; padding:12px; border-radius:8px; border:none; font-size:14px; font-weight:600; cursor:pointer;
+  }
+  #rm-booking-overlay .rm-btn-primary{background:var(--rm-accent); color:#fff;}
+  #rm-booking-overlay .rm-btn-secondary{background:transparent; color:var(--rm-muted); border:1px solid var(--rm-border);}
+  #rm-booking-overlay .rm-summary-row{display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid var(--rm-border); font-size:14px; gap:12px;}
+  #rm-booking-overlay .rm-summary-row span:first-child{color:var(--rm-muted); flex-shrink:0;}
+  #rm-booking-overlay .rm-summary-row span:last-child{text-align:right;}
+  #rm-booking-overlay .rm-code-box{
+    background:var(--rm-accent-light); color:var(--rm-accent-dark); border-radius:8px; padding:14px;
+    text-align:center; font-size:20px; font-weight:700; letter-spacing:2px; margin-top:10px;
+  }
+  #rm-booking-overlay .rm-req-tag{ font-size:11px; color:var(--rm-muted); font-weight:400; }
+  #rm-booking-overlay .rm-success{text-align:center; padding:10px 0;}
+  #rm-booking-overlay .rm-success .rm-icon{font-size:40px;}
+  #rm-booking-overlay .rm-hint{font-size:12px; color:var(--rm-muted); margin-top:4px;}
+</style>
+
+<div id="rm-booking-overlay" onclick="if(event.target===this) closeBookingModal()">
+  <div class="rm-modal">
+    <button class="rm-close" onclick="closeBookingModal()" aria-label="Tutup">&#10005;</button>
+    <h1>Booking rental motor</h1>
+    <p class="rm-sub">Ikuti langkah berikut sampai selesai</p>
+    <div class="rm-steps" id="rm-steps"></div>
+    <div class="rm-card" id="rm-stepContent"></div>
+  </div>
+</div>
+
+<script>
+(function(){
+  const ADMIN_WA = '62895351452156';
+  const totalSteps = 4;
+  const state = {
+    step: 0,
+    motor: '', tanggalMulai: '', tanggalSelesai: '',
+    nama: '', wa: '',
+    dpMetode: '',
+    serah: '',
+    alamat: '',
+    bookingCode: ''
+  };
+
+  function genCode(){
+    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    let c = 'RM-';
+    for(let i=0;i<6;i++) c += chars[Math.floor(Math.random()*chars.length)];
+    return c;
+  }
+
+  function renderDots(){
+    const el = document.getElementById('rm-steps');
+    el.innerHTML = '';
+    for(let i=0;i<totalSteps;i++){
+      const d = document.createElement('div');
+      d.className = 'rm-dot' + (i <= state.step ? ' rm-done' : '');
+      el.appendChild(d);
+    }
+  }
+
+  function setError(id, msg){
+    const e = document.getElementById(id);
+    if(e) e.textContent = msg || '';
+  }
+
+  function goto(step){ state.step = step; render(); }
+
+  function validateStep1(){
+    const motor = document.getElementById('rm-inp-motor').value;
+    const mulai = document.getElementById('rm-inp-mulai').value;
+    const selesai = document.getElementById('rm-inp-selesai').value;
+    const nama = document.getElementById('rm-inp-nama').value.trim();
+    const wa = document.getElementById('rm-inp-wa').value.trim();
+    let ok = true;
+    if(!motor){ setError('rm-err-motor','Pilih jenis motor dulu'); ok=false;} else setError('rm-err-motor','');
+    if(!mulai || !selesai){ setError('rm-err-tanggal','Isi tanggal mulai dan selesai sewa'); ok=false;}
+    else if(new Date(selesai) < new Date(mulai)){ setError('rm-err-tanggal','Tanggal selesai tidak boleh sebelum tanggal mulai'); ok=false;}
+    else setError('rm-err-tanggal','');
+    if(!nama){ setError('rm-err-nama','Nama belum diisi'); ok=false;} else setError('rm-err-nama','');
+    if(!/^[0-9+]{9,15}$/.test(wa)){ setError('rm-err-wa','Nomor WhatsApp tidak valid'); ok=false;} else setError('rm-err-wa','');
+    if(!ok) return false;
+    state.motor = motor; state.tanggalMulai = mulai; state.tanggalSelesai = selesai;
+    state.nama = nama; state.wa = wa;
+    state.bookingCode = genCode();
+    return true;
+  }
+
+  function validateStep2(){
+    let ok = true;
+    if(!state.dpMetode){ setError('rm-err-dp','Pilih metode pembayaran DP dulu'); ok = false; }
+    else setError('rm-err-dp','');
+    return ok;
+  }
+
+  function validateStep3(){
+    if(!state.serah){ setError('rm-err-serah','Pilih diantar atau ambil sendiri'); return false; }
+    if(state.serah === 'antar' && !document.getElementById('rm-inp-alamat').value.trim()){
+      setError('rm-err-serah','Isi alamat pengantaran dulu'); return false;
+    }
+    if(state.serah === 'antar') state.alamat = document.getElementById('rm-inp-alamat').value.trim();
+    setError('rm-err-serah','');
+    return true;
+  }
+
+  function selectOpt(group, value, btn){
+    state[group] = value;
+    document.querySelectorAll('[data-rm-group="'+group+'"]').forEach(b=>b.classList.remove('rm-selected'));
+    btn.classList.add('rm-selected');
+    if(group === 'serah') render();
+  }
+
+  function restoreSelection(group){
+    document.querySelectorAll('[data-rm-group="'+group+'"]').forEach(b=>{
+      if(b.getAttribute('onclick').includes("'"+state[group]+"'")) b.classList.add('rm-selected');
+    });
+  }
+
+  function labelMotor(v){
+    return {beat:'Beat', mio_m3:'Mio M3', xride125:'X-Ride 125cc', beat_new:'Beat New', vario125:'Vario 125', vario150:'Vario 150'}[v] || v;
+  }
+
+  function buildWaMessage(){
+    const dpLabel = {transfer:'Transfer bank', ewallet:'E-wallet', tunai:'Tunai di lokasi'}[state.dpMetode] || '-';
+    const serahLabel = state.serah === 'antar' ? ('Diantar ke ' + state.alamat) : 'Ambil di lokasi rental';
+    const lines = [
+      '*Konfirmasi booking rental motor*',
+      'Kode booking: ' + state.bookingCode,
+      'Motor: ' + labelMotor(state.motor),
+      'Tanggal: ' + state.tanggalMulai + ' s/d ' + state.tanggalSelesai,
+      'Nama: ' + state.nama,
+      'WhatsApp: ' + state.wa,
+      'Metode DP: ' + dpLabel,
+      'Serah terima: ' + serahLabel,
+      'Mohon dikonfirmasi ya, terima kasih.'
+    ];
+    return lines.join('\n');
+  }
+
+  function buildWaLink(){
+    return 'https://wa.me/' + ADMIN_WA + '?text=' + encodeURIComponent(buildWaMessage());
+  }
+
+  function render(){
+    renderDots();
+    const c = document.getElementById('rm-stepContent');
+
+    if(state.step === 0){
+      c.innerHTML = `
+        <div class="rm-step-title"><span class="rm-step-num">1</span>Booking</div>
+        <p class="rm-step-desc">Pilih motor dan tanggal sewa, lalu isi data kontak kamu.</p>
+        <label for="rm-inp-motor">Jenis motor</label>
+        <select id="rm-inp-motor">
+          <option value="">Pilih motor</option>
+          <option value="beat">Beat</option>
+          <option value="mio_m3">Mio M3</option>
+          <option value="xride125">X-Ride 125cc</option>
+          <option value="beat_new">Beat New</option>
+          <option value="vario125">Vario 125</option>
+          <option value="vario150">Vario 150</option>
+        </select>
+        <div class="rm-error" id="rm-err-motor"></div>
+
+        <label>Tanggal sewa</label>
+        <div style="display:flex; gap:10px;">
+          <input type="date" id="rm-inp-mulai">
+          <input type="date" id="rm-inp-selesai">
+        </div>
+        <div class="rm-error" id="rm-err-tanggal"></div>
+
+        <label for="rm-inp-nama">Nama lengkap</label>
+        <input type="text" id="rm-inp-nama" placeholder="Nama sesuai KTP">
+        <div class="rm-error" id="rm-err-nama"></div>
+
+        <label for="rm-inp-wa">Nomor WhatsApp</label>
+        <input type="text" id="rm-inp-wa" placeholder="08xxxxxxxxxx">
+        <div class="rm-error" id="rm-err-wa"></div>
+
+        <div class="rm-row">
+          <button class="rm-btn rm-btn-primary" onclick="if(RMBooking.validateStep1()) RMBooking.goto(1)">Lanjut ke verifikasi &amp; DP</button>
+        </div>
+      `;
+    }
+
+    if(state.step === 1){
+      c.innerHTML = `
+        <div class="rm-step-title"><span class="rm-step-num">2</span>Verifikasi &amp; DP</div>
+        <p class="rm-step-desc">Kode booking kamu, dan pilih metode pembayaran DP untuk mengunci jadwal.</p>
+        <div class="rm-code-box">${state.bookingCode}</div>
+        <p class="rm-hint">Simpan kode ini untuk konfirmasi ke admin rental.</p>
+
+        <label>Metode DP</label>
+        <div class="rm-options">
+          <div class="rm-opt" data-rm-group="dpMetode" onclick="RMBooking.selectOpt('dpMetode','transfer',this)">Transfer bank</div>
+          <div class="rm-opt" data-rm-group="dpMetode" onclick="RMBooking.selectOpt('dpMetode','ewallet',this)">E-wallet</div>
+          <div class="rm-opt" data-rm-group="dpMetode" onclick="RMBooking.selectOpt('dpMetode','tunai',this)">Tunai di lokasi</div>
+        </div>
+        <div class="rm-error" id="rm-err-dp"></div>
+
+        <div class="rm-row">
+          <button class="rm-btn rm-btn-secondary" onclick="RMBooking.goto(0)">Kembali</button>
+          <button class="rm-btn rm-btn-primary" onclick="if(RMBooking.validateStep2()) RMBooking.goto(2)">Lanjut</button>
+        </div>
+      `;
+      restoreSelection('dpMetode');
+    }
+
+    if(state.step === 2){
+      c.innerHTML = `
+        <div class="rm-step-title"><span class="rm-step-num">3</span>Serah terima motor</div>
+        <p class="rm-step-desc">Motor mau diantar ke lokasimu, atau kamu ambil sendiri di lokasi rental?</p>
+
+        <div class="rm-options">
+          <div class="rm-opt" data-rm-group="serah" onclick="RMBooking.selectOpt('serah','antar',this)">Diantar</div>
+          <div class="rm-opt" data-rm-group="serah" onclick="RMBooking.selectOpt('serah','ambil',this)">Ambil di lokasi rental</div>
+        </div>
+        <div id="rm-alamatWrap" style="${state.serah==='antar' ? '' : 'display:none;'}">
+          <label for="rm-inp-alamat">Alamat pengantaran</label>
+          <input type="text" id="rm-inp-alamat" placeholder="Alamat lengkap" value="${state.alamat||''}">
+        </div>
+        <div class="rm-error" id="rm-err-serah"></div>
+
+        <div class="rm-row">
+          <button class="rm-btn rm-btn-secondary" onclick="RMBooking.goto(1)">Kembali</button>
+          <button class="rm-btn rm-btn-primary" onclick="if(RMBooking.validateStep3()) RMBooking.goto(3)">Selesaikan booking</button>
+        </div>
+      `;
+      restoreSelection('serah');
+    }
+
+    if(state.step === 3){
+      const dpLabel = {transfer:'Transfer bank', ewallet:'E-wallet', tunai:'Tunai di lokasi'}[state.dpMetode] || '-';
+      const serahLabel = state.serah === 'antar' ? ('Diantar ke: ' + state.alamat) : 'Ambil di lokasi rental';
+      c.innerHTML = `
+        <div class="rm-success">
+          <div class="rm-icon">&#10003;</div>
+          <div class="rm-step-title" style="justify-content:center;">Booking berhasil dibuat</div>
+          <p class="rm-step-desc">Simpan kode booking untuk konfirmasi ke admin.</p>
+        </div>
+        <div class="rm-code-box">${state.bookingCode}</div>
+        <div style="margin-top:16px;">
+          <div class="rm-summary-row"><span>Motor</span><span>${labelMotor(state.motor)}</span></div>
+          <div class="rm-summary-row"><span>Tanggal sewa</span><span>${state.tanggalMulai} s/d ${state.tanggalSelesai}</span></div>
+          <div class="rm-summary-row"><span>Nama</span><span>${state.nama}</span></div>
+          <div class="rm-summary-row"><span>WhatsApp</span><span>${state.wa}</span></div>
+          <div class="rm-summary-row"><span>Metode DP</span><span>${dpLabel}</span></div>
+          <div class="rm-summary-row"><span>Serah terima</span><span>${serahLabel}</span></div>
+        </div>
+        <div class="rm-row">
+          <a class="rm-btn rm-btn-primary" style="text-decoration:none; text-align:center; display:flex; align-items:center; justify-content:center;" href="${buildWaLink()}" target="_blank" rel="noopener">Kirim booking ke WhatsApp</a>
+        </div>
+        <p class="rm-hint" style="text-align:center;">Nomor admin: 0896-5838-5194.</p>
+        <div class="rm-row">
+          <button class="rm-btn rm-btn-secondary" onclick="RMBooking.resetAll()">Buat booking baru</button>
+        </div>
+      `;
+    }
+  }
+
+  function resetAll(){
+    Object.assign(state, {step:0, motor:'', tanggalMulai:'', tanggalSelesai:'', nama:'', wa:'', dpMetode:'', serah:'', alamat:'', bookingCode:''});
+    render();
+  }
+
+  function openBookingModal(){
+    document.getElementById('rm-booking-overlay').classList.add('rm-open');
+    document.body.style.overflow = 'hidden';
+    render();
+  }
+
+  function closeBookingModal(){
+    document.getElementById('rm-booking-overlay').classList.remove('rm-open');
+    document.body.style.overflow = '';
+  }
+
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape') closeBookingModal();
+  });
+
+  // Diekspos ke luar supaya bisa dipanggil dari tombol di halaman kamu
+  window.openBookingModal = openBookingModal;
+  window.closeBookingModal = closeBookingModal;
+  window.RMBooking = { goto, validateStep1, validateStep2, validateStep3, selectOpt, resetAll };
+})();
+</script>
 
 </body>
 </html>
